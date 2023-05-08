@@ -7,7 +7,7 @@ from tqdm import tqdm
 import numpy as np
 import torch
 from torch_geometric.loader import DataListLoader, DataLoader
-from GraphCare import GAT, GIN, GraphCare
+from graphcare_ import GAT, GIN, GraphCare
 from tqdm import tqdm
 from pyhealth.metrics import multilabel_metrics_fn
 import torch.nn.functional as F
