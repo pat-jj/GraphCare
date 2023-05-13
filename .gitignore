@@ -1,5 +1,6 @@
 /graphs
 /graphs-gpt4
+/ehr_training_result
 .exp_data
 /output
 .ipynb_checkpoints

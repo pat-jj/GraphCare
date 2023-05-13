@@ -25,6 +25,9 @@ from torch_geometric.nn import global_mean_pool
 from torch_geometric.utils import softmax
 from torch.nn import LeakyReLU
 
+import os
+os.environ['CUDA_LAUNCH_BLOCKING'] = "1"
+
 
 class BiAttentionGNNConv(MessagePassing):
     def __init__(self, nn: torch.nn.Module, eps: float = 0.,
@@ -144,18 +147,16 @@ class GraphCare(nn.Module):
 
         for layer in range(1, layers+1):
             if self.use_alpha:
-                self.alpha_attn[str(layer)] = nn.Linear(num_nodes, num_nodes)
-
+                self.alpha_attn[str(layer)] = nn.Linear(hidden_dim, 1)
                 if attn_init is not None:
-                    attn_init = attn_init.float()  # Convert attn_init to float
-                    attn_init_matrix = torch.eye(num_nodes).float() * attn_init  # Multiply the identity matrix by attn_init
-                    self.alpha_attn[str(layer)].weight.data.copy_(attn_init_matrix)  # Copy the modified attn_init_matrix to the weights
-
+                    self.attn_init = attn_init # nodes, 1
                 else:
-                    nn.init.xavier_normal_(self.alpha_attn[str(layer)].weight)
+                    self.attn_init = None
+                nn.init.xavier_normal_(self.alpha_attn[str(layer)].weight)
             if self.use_beta:
-                self.beta_attn[str(layer)] = nn.Linear(num_nodes, 1)
+                self.beta_attn[str(layer)] = nn.Linear(hidden_dim, 1)
                 nn.init.xavier_normal_(self.beta_attn[str(layer)].weight)
+
             if self.gnn == "BAT":
                 self.conv[str(layer)] = BiAttentionGNNConv(nn.Linear(hidden_dim, hidden_dim), edge_dim=hidden_dim, edge_attn=self.edge_attn, eps=self_attn)
             elif self.gnn == "GAT":
@@ -175,6 +176,8 @@ class GraphCare(nn.Module):
     def to(self, device):
         super().to(device)
         self.lambda_j = self.lambda_j.float().to(device)
+        if self.attn_init is not None:
+            self.attn_init = self.attn_init.float().to(device)
         return self
 
 
@@ -190,13 +193,23 @@ class GraphCare(nn.Module):
         x = self.node_emb(node_ids).float()
         edge_attr = self.rel_emb(rel_ids).float()
 
-        # we found that batch normalization is not helpful
-        # x = self.bn1(self.lin(x))
-        # edge_attr = self.bn1(self.lin(edge_attr))
-
         x = self.lin(x)
         edge_attr = self.lin(edge_attr)
 
+        # start of new code
+        max_nodes = self.num_nodes  # Maximum number of nodes in any sample
+        batch_size = batch.max().item() + 1  # Number of samples in the batch
+        max_visits = visit_node.shape[1]  # Maximum number of visits in any sample
+        hidden_dim = x.shape[1]  # Hidden dimension size
+
+        x_new = torch.zeros((batch_size, max_visits, max_nodes, hidden_dim), device=x.device)
+
+        for batch_id in range(batch_size):
+            x_graph = x[batch == batch_id]
+            num_nodes = x_graph.shape[0]
+            x_new[batch_id, :, :num_nodes] = x_graph
+
+        x_attn = x_new # patients, visits, nodes, features
 
         if store_attn:
             self.alpha_weights = []
@@ -206,27 +219,39 @@ class GraphCare(nn.Module):
 
         for layer in range(1, self.layers+1):
             if self.use_alpha:
-                # alpha = masked_softmax((self.leakyrelu(self.alpha_attn[str(layer)](visit_node.float()))), mask=visit_node>1, dim=1)
-                alpha = torch.softmax((self.alpha_attn[str(layer)](visit_node.float())), dim=1)
+                if layer == 1:
+                    visit_node = visit_node.unsqueeze(-1) # patients, visits, nodes, 1
+                feature_mat = visit_node.float() * x_attn # patients, visits, nodes, features
+
+                if self.attn_init is not None:
+                    alpha_lin = self.alpha_attn[str(layer)](feature_mat) * self.attn_init # patients, visits, nodes, 1
+                else:
+                    alpha_lin = self.alpha_attn[str(layer)](feature_mat) # patients, visits, nodes, 1
+                alpha = torch.softmax(alpha_lin, dim=2) # patients, visits, nodes, 1
 
             if self.use_beta:
-                # beta = masked_softmax((self.leakyrelu(self.beta_attn[str(layer)](visit_node.float()))), mask=visit_node>1, dim=0) * self.lambda_j
-                beta = torch.tanh((self.beta_attn[str(layer)](visit_node.float()))) * self.lambda_j
+                feature_mat = visit_node.float() * x_attn # patients, visits, nodes, features
+                visit_emb = torch.mean(feature_mat, dim=2) # patients, visits, features
+                beta_lin = self.beta_attn[str(layer)](visit_emb) # patients, visits, 1
+
+                beta = torch.softmax(beta_lin, dim=1) * self.lambda_j # patients, visits, 1
+                beta = beta.unsqueeze(2)  # Add a dimension for nodes
+                beta = beta.expand(-1, -1, alpha.shape[2], -1)  # patients, visits, nodes, 1
 
             if self.use_alpha and self.use_beta:
-                attn = alpha * beta
+                attn = alpha * beta  # patients, visits, nodes, 1
             elif self.use_alpha:
                 attn = alpha * torch.ones((batch.max().item() + 1, self.max_visit, 1)).to(edge_index.device)
             elif self.use_beta:
                 attn = beta * torch.ones((batch.max().item() + 1, self.max_visit, self.num_nodes)).to(edge_index.device)
             else:
                 attn = torch.ones((batch.max().item() + 1, self.max_visit, self.num_nodes)).to(edge_index.device)
-                
-            attn = torch.sum(attn, dim=1)
             
             xj_node_ids = node_ids[edge_index[0]]
             xj_batch = batch[edge_index[0]]
-            attn = attn[xj_batch, xj_node_ids].reshape(-1, 1)
+            xj_visit_ids = torch.zeros(len(edge_index[0])).long().to(edge_index.device)
+            attn = attn[xj_batch, xj_visit_ids, xj_node_ids].reshape(-1, 1)
+
 
             if self.gnn == "BAT":
                 x, w_rel = self.conv[str(layer)](x, edge_index, edge_attr, attn=attn)
@@ -246,6 +271,8 @@ class GraphCare(nn.Module):
 
         if self.patient_mode == "joint" or self.patient_mode == "graph":
             # patient graph embedding through global mean pooling
+            # x = x.mean(dim=1)  # patients, nodes, features
+            # x_graph = x.mean(dim=1)  # patients, features
             x_graph = global_mean_pool(x, batch)
             x_graph = F.dropout(x_graph, p=self.dropout, training=self.training)
 

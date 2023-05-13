@@ -20,7 +20,7 @@ import neptune
 from copy import deepcopy
 
 
-def load_everything(dataset, task, kg="", kg_ratio=1.0, th="th015"):
+def load_everything(dataset, task, kg="", kg_ratio=1.0, voc_ratio=1.0, idx=None, th="th015"):
     if kg == "GPT-KG":
         kg = ""
     if task == "drugrec" or task == "lenofstay":
@@ -36,14 +36,19 @@ def load_everything(dataset, task, kg="", kg_ratio=1.0, th="th015"):
     else:
         sample_dataset_file = f"{path_1}/sample_dataset_{dataset}_{task}_{kg}{th}.pkl"
         graph_file = f"{path_1}/graph_{dataset}_{task}_{kg}{th}.pkl"
-    map_cluster_file = f"{path_1}/clusters_{th}.json" 
-    map_cluster_inv = f"{path_1}/clusters_inv_{th}.json"
+
+    if voc_ratio != 1.0:
+        sample_dataset_file = f"{path_1}/sample_dataset_mimic3_{task}_th015_mask_{voc_ratio}_{idx}.pkl"
+        graph_file = f"{path_1}/graph_mimic3_{task}_th015_mask_{voc_ratio}_{idx}.pkl"
+
+    map_cluster_file = f"{path_1}/clusters_{th}_ana.json" 
+    map_cluster_inv = f"{path_1}/clusters_inv_{th}_ana.json"
     map_cluster_rel = f"{path_1}/clusters_rel_{th}.json"
     map_cluster_rel_inv = f"{path_1}/clusters_inv_rel_{th}.json"
-    ccscm_id2clus = f"{path_1}/ccscm_id2clus.json"
-    ccsproc_id2clus = f"{path_1}/ccsproc_id2clus.json"
+    ccscm_id2clus = f"{path_1}/ccscm_id2clus_ana.json"
+    ccsproc_id2clus = f"{path_1}/ccsproc_id2clus_ana.json"
     if task == "mortality" or task == "readmission":
-        atc3_id2clus = f"{path_1}/atc3_id2clus.json"
+        atc3_id2clus = f"{path_1}/atc3_id2clus_ana.json"
 
     ent2id_file = f"{path_2}/ent2id.json"
     rel2id_file = f"{path_2}/rel2id.json"
@@ -120,18 +125,21 @@ def label_ehr_nodes(task, sample_dataset, max_nodes, ccscm_id2clus, ccsproc_id2c
         for condition in flatten(patient['conditions']):
             ehr_node = ccscm_id2clus[condition]
             nodes.append(int(ehr_node))
-            patient['node_set'].append(int(ehr_node))
+            if ehr_node != "2755":
+                patient['node_set'].append(int(ehr_node))
 
         for procedure in flatten(patient['procedures']):
             ehr_node = ccsproc_id2clus[procedure]
             nodes.append(int(ehr_node))
-            patient['node_set'].append(int(ehr_node))
+            if ehr_node != "2755":
+                patient['node_set'].append(int(ehr_node))
 
         if task == "mortality" or task == "readmission":
             for drug in flatten(patient['drugs']):
                 ehr_node = atc3_id2clus[drug]
                 nodes.append(int(ehr_node))
-                patient['node_set'].append(int(ehr_node))
+                if ehr_node != "2755":
+                    patient['node_set'].append(int(ehr_node))
 
         # make one-hot encoding
         node_vec = np.zeros(max_nodes)
@@ -276,7 +284,7 @@ def evaluate(mode, patient_mode, gnn, model, device, loader):
 
     return y_true_all, y_prob_all
 
-def train_loop(dataset, task, mode, patient_mode, gnn, train_loader, val_loader, model, optimizer, loss_func, device, epochs, logger=None, run=None, early_stop=5):
+def train_loop(dataset, task, mode, patient_mode, gnn, train_loader, val_loader, model, optimizer, loss_func, device, epochs, logger=None, run=None, early_stop=3):
     best_roc_auc = 0
     best_f1 = 0
     early_stop_indicator = 0
@@ -392,8 +400,8 @@ def get_logger(dataset, task, kg, hidden_dim, epochs, lr, decay_rate, dropout, n
 
 def single_run(args, params):
 
-    dataset, task, kg, batch_size, hidden_dim, epochs, lr, weight_decay, dropout, num_layers, decay_rate, gnn, patient_mode, alpha, beta, edge_attn, freeze, attn_init, in_drop_rate, kg_ratio, train_ratio, feat_ratio = \
-        params['dataset'], params['task'], params['kg'], params['batch_size'], params['hidden_dim'], params['epochs'], params['lr'], params['weight_decay'], params['dropout'], params['num_layers'], params['decay_rate'], params['gnn'], params['patient_mode'], params['alpha'], params['beta'], params['edge_attn'], params['freeze'], params['attn_init'], params['in_drop_rate'], params['kg_ratio'], params['train_ratio'], params['feat_ratio']
+    dataset, task, kg, batch_size, hidden_dim, epochs, lr, weight_decay, dropout, num_layers, decay_rate, gnn, patient_mode, alpha, beta, edge_attn, freeze, attn_init, in_drop_rate, kg_ratio, train_ratio, voc_ratio, data_idx = \
+        params['dataset'], params['task'], params['kg'], params['batch_size'], params['hidden_dim'], params['epochs'], params['lr'], params['weight_decay'], params['dropout'], params['num_layers'], params['decay_rate'], params['gnn'], params['patient_mode'], params['alpha'], params['beta'], params['edge_attn'], params['freeze'], params['attn_init'], params['in_drop_rate'], params['kg_ratio'], params['train_ratio'], params['voc_ratio'], params['data_idx']
      
     run = neptune.init_run(
         project="patrick.jiang.cs/GraphCare",
@@ -410,21 +418,24 @@ def single_run(args, params):
     # load dataset
     sample_dataset, G, ent2id, rel2id, ent_emb, rel_emb, \
                 map_cluster, map_cluster_inv, map_cluster_rel, map_cluster_rel_inv, \
-                    ccscm_id2clus, ccsproc_id2clus, atc3_id2clus = load_everything(dataset, task, kg, kg_ratio)
+                    ccscm_id2clus, ccsproc_id2clus, atc3_id2clus = load_everything(dataset, task, kg, kg_ratio, voc_ratio=voc_ratio,idx=data_idx)
     mode, out_channels, loss_function = get_mode_and_out_channels_and_loss_func(task=task, sample_dataset=sample_dataset)
 
+
+    for i in range(len(sample_dataset)):
+        sample_dataset[i]['visit_padded_node'] = torch.tensor(np.append(sample_dataset[i]['visit_padded_node'].numpy(), 0)).reshape(1, -1)
     # label direct ehr node
     print("Labeling direct ehr nodes...")
     sample_dataset = label_ehr_nodes(task, sample_dataset, len(map_cluster), ccscm_id2clus, ccsproc_id2clus, atc3_id2clus)
     print("Splitting dataset...")
     train_dataset, val_dataset, test_dataset = split_by_patient(sample_dataset, [0.8, 0.1, 0.1], train_ratio=train_ratio, seed=528)
-    if feat_ratio != 1.0:
+    # if feat_ratio != 1.0:
         # with open(f'/data/pj20/exp_data/ccscm_ccsproc/val_dataset_mimic3_{task}_th015_{feat_ratio}.pkl', 'rb') as f:
         #     val_dataset = pickle.load(f)
         #     val_dataset = label_ehr_nodes(task, val_dataset, len(map_cluster), ccscm_id2clus, ccsproc_id2clus, atc3_id2clus)
-        with open(f'/data/pj20/exp_data/ccscm_ccsproc/train_dataset_mimic3_{task}_th015_{feat_ratio}.pkl', 'rb') as f:
-            train_dataset = pickle.load(f)
-            train_dataset = label_ehr_nodes(task, train_dataset, len(map_cluster), ccscm_id2clus, ccsproc_id2clus, atc3_id2clus)
+        # with open(f'/data/pj20/exp_data/ccscm_ccsproc/train_dataset_mimic3_{task}_th015_{feat_ratio}.pkl', 'rb') as f:
+        #     train_dataset = pickle.load(f)
+        #     train_dataset = label_ehr_nodes(task, train_dataset, len(map_cluster), ccscm_id2clus, ccsproc_id2clus, atc3_id2clus)
     # get initial node attention
     print("Getting initial node attention...")
     if task == "mortality" or task == "readmission":
@@ -435,8 +446,12 @@ def single_run(args, params):
         raise NotImplementedError
     
     with open(attn_file, "rb") as f:
-        attn_weights = torch.tensor(pickle.load(f))
+        attn_weights = np.append(pickle.load(f), [0]).reshape(-1,1)
+        attn_weights = torch.tensor(attn_weights)
 
+    G.add_nodes_from([
+    (2755, {'y': int(2755), 'x': np.zeros((1, ent_emb.shape[1])).tolist()[0]})
+    ])
     print(G)
 
     G_tg = from_networkx(G)
@@ -564,30 +579,36 @@ def hyper_search_(args, params):
         #     0.7,
         #     0.9,
         # ],
-        # "feat_ratio": [
-        #     0.05,
-        #     0.1,
-        #     0.2,
-        #     0.3,
-        #     0.4,
-        #     0.5,
-        #     0.6,
-        #     0.7,
-        #     0.8,
-        #     0.9,
-        # ]
+        "voc_ratio": [
+            0.1,
+            0.2,
+            0.3,
+            # 0.4,
+            # 0.5,
+            # 0.6,
+            # 0.7,
+            # 0.8,
+            # 0.9,
+        ],
 
-        
     }
 
-    for hp_name, hp_options in hyperparameter_options.items():
-        print(f"now searching for {hp_name}...")
-        for hp_value in hp_options:
-            print(f"now searching for {hp_name}={hp_value}...")
-            params_copy = params.copy()
-            params_copy[hp_name] = hp_value
-            for i in range(3):
-                single_run(args, params_copy)
+    data_idxs = [
+        0, 
+        1, 
+        2
+        ]
+
+    for data_idx in data_idxs:
+        for hp_name, hp_options in hyperparameter_options.items():
+            print(f"now searching for {hp_name}...")
+            for hp_value in hp_options:
+                print(f"now searching for {hp_name}={hp_value}...")
+                params_copy = params.copy()
+                params_copy[hp_name] = hp_value
+                params_copy['data_idx'] = data_idx
+                for i in range(1):
+                    single_run(args, params_copy)
 
 
 def main():
