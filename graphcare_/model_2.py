@@ -99,7 +99,7 @@ class GraphCare(nn.Module):
     def __init__(
             self, num_nodes, num_rels, max_visit, embedding_dim, hidden_dim, 
             out_channels, layers=3, dropout=0.5, decay_rate=0.03, node_emb=None, rel_emb=None,
-            freeze=False, patient_mode="joint", use_alpha=True, use_beta=True, use_edge_attn=True, 
+            freeze=False, patient_mode="joint", use_alpha=True, use_beta=True, use_gamma=False, use_edge_attn=True, 
             self_attn=0., gnn="BAT", attn_init=None, drop_rate=0.,
         ):
         super(GraphCare, self).__init__()
@@ -110,11 +110,13 @@ class GraphCare(nn.Module):
         self.patient_mode = patient_mode
         self.use_alpha = use_alpha
         self.use_beta = use_beta
+        self.use_gamma = use_gamma
         self.edge_attn = use_edge_attn
         self.drop_rate = drop_rate
         self.num_nodes = num_nodes
         self.num_rels = num_rels
         self.max_visit = max_visit
+        self.batch_size = 4
 
         j = torch.arange(max_visit).float()
         self.lambda_j = torch.exp(self.decay_rate * (max_visit - j)).unsqueeze(0).reshape(1, max_visit, 1).float()
@@ -144,17 +146,19 @@ class GraphCare(nn.Module):
         self.relu = nn.ReLU()
         self.tahh = nn.Tanh()
 
+        if attn_init is not None:
+            self.attn_init = attn_init.unsqueeze(0).unsqueeze(0).expand((self.batch_size, max_visit, num_nodes, 1)).squeeze(-1).requires_grad_(True)
+        else:
+            self.attn_init = None
+
 
         for layer in range(1, layers+1):
             if self.use_alpha:
                 self.alpha_attn[str(layer)] = nn.Linear(hidden_dim, 1)
-                if attn_init is not None:
-                    self.attn_init = attn_init # nodes, 1
-                else:
-                    self.attn_init = None
                 nn.init.xavier_normal_(self.alpha_attn[str(layer)].weight)
             if self.use_beta:
-                self.beta_attn[str(layer)] = nn.Linear(hidden_dim, 1)
+                # self.beta_attn[str(layer)] = nn.Linear(hidden_dim, 1)
+                self.beta_attn[str(layer)] = nn.Linear(num_nodes, 1)
                 nn.init.xavier_normal_(self.beta_attn[str(layer)].weight)
 
             if self.gnn == "BAT":
@@ -220,37 +224,45 @@ class GraphCare(nn.Module):
         for layer in range(1, self.layers+1):
             if self.use_alpha:
                 if layer == 1:
-                    visit_node = visit_node.unsqueeze(-1) # patients, visits, nodes, 1
-                feature_mat = visit_node.float() * x_attn # patients, visits, nodes, features
+                    visit_node_ = visit_node.unsqueeze(-1) # patients, visits, nodes, 1
+                feature_mat = visit_node_.float() * x_attn # patients, visits, nodes, features
 
+                alpha_lin = self.alpha_attn[str(layer)](feature_mat).squeeze(-1) # patients, visits, nodes
+                
                 if self.attn_init is not None:
-                    alpha_lin = self.alpha_attn[str(layer)](feature_mat) * self.attn_init # patients, visits, nodes, 1
-                else:
-                    alpha_lin = self.alpha_attn[str(layer)](feature_mat) # patients, visits, nodes, 1
-                alpha = torch.softmax(alpha_lin, dim=2) # patients, visits, nodes, 1
+                    # attn_init # nodes, 1
+                    # alpha_lin += self.attn_init.unsqueeze(0).unsqueeze(0).expand(alpha_lin.shape).squeeze(-1) # patients, visits, nodes
+                    alpha_lin * self.attn_init # patients, visits, nodes
+                alpha = torch.softmax(alpha_lin, dim=1) # patients, visits, nodes
 
             if self.use_beta:
-                feature_mat = visit_node.float() * x_attn # patients, visits, nodes, features
-                visit_emb = torch.mean(feature_mat, dim=2) # patients, visits, features
-                beta_lin = self.beta_attn[str(layer)](visit_emb) # patients, visits, 1
+                beta = torch.tanh((self.beta_attn[str(layer)](visit_node.float()))) * self.lambda_j # patients, visits, nodes, 1
 
-                beta = torch.softmax(beta_lin, dim=1) * self.lambda_j # patients, visits, 1
-                beta = beta.unsqueeze(2)  # Add a dimension for nodes
-                beta = beta.expand(-1, -1, alpha.shape[2], -1)  # patients, visits, nodes, 1
+                # 2
+                # feature_mat = visit_node.float() * x_attn # patients, visits, nodes, features
+                # visit_emb = torch.mean(feature_mat, dim=2) # patients, visits, features
+                # beta_lin = self.beta_attn[str(layer)](visit_emb) # patients, visits, 1
+                # beta = torch.tanh(beta_lin) * self.lambda_j # patients, visits, 1
+
+                # 3
+                # beta = torch.softmax(beta_lin, dim=0) * self.lambda_j # patients, visits, 1
+                # beta = beta.unsqueeze(2)  # Add a dimension for nodes
+                # beta = beta.expand(-1, -1, alpha.shape[2], -1).squeeze(-1)  # patients, visits, nodes
 
             if self.use_alpha and self.use_beta:
-                attn = alpha * beta  # patients, visits, nodes, 1
+                attn = alpha * beta  # patients, visits, nodes
+
             elif self.use_alpha:
-                attn = alpha * torch.ones((batch.max().item() + 1, self.max_visit, 1)).to(edge_index.device)
+                attn = alpha.squeeze(-1)  # patients, visits, nodes
             elif self.use_beta:
-                attn = beta * torch.ones((batch.max().item() + 1, self.max_visit, self.num_nodes)).to(edge_index.device)
+                attn = beta.squeeze(-1)  # patients, visits, nodes
             else:
-                attn = torch.ones((batch.max().item() + 1, self.max_visit, self.num_nodes)).to(edge_index.device)
+                attn = None
             
             xj_node_ids = node_ids[edge_index[0]]
             xj_batch = batch[edge_index[0]]
             xj_visit_ids = torch.zeros(len(edge_index[0])).long().to(edge_index.device)
-            attn = attn[xj_batch, xj_visit_ids, xj_node_ids].reshape(-1, 1)
+            attn = attn[xj_batch, xj_visit_ids, xj_node_ids].reshape(-1, 1) # edges, 1
 
 
             if self.gnn == "BAT":

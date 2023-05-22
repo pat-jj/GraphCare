@@ -9,6 +9,7 @@ from tqdm import tqdm
 import numpy as np
 import torch
 from torch_geometric.loader import DataListLoader, DataLoader
+from torch_geometric.utils import k_hop_subgraph
 from graphcare_ import GAT, GIN, GraphCare
 from tqdm import tqdm
 from pyhealth.metrics import multilabel_metrics_fn
@@ -31,8 +32,8 @@ def load_everything(dataset, task, kg="", kg_ratio=1.0, th="th015"):
         path_2 = "./graphs/cond_proc_drug/CCSCM_CCSPROC_ATC3"
 
     if kg_ratio != 1.0:
-        sample_dataset_file = f"{path_1}/sample_dataset_{dataset}_{task}_{kg}{th}_{kg_ratio}.pkl"
-        graph_file = f"{path_1}/graph_{dataset}_{task}_{kg}{th}_{kg_ratio}.pkl"
+        sample_dataset_file = f"{path_1}/sample_dataset_{dataset}_{task}_{kg}{th}_kg{kg_ratio}.pkl"
+        graph_file = f"{path_1}/graph_{dataset}_{task}_{kg}{th}.pkl"
     else:
         sample_dataset_file = f"{path_1}/sample_dataset_{dataset}_{task}_{kg}{th}.pkl"
         graph_file = f"{path_1}/graph_{dataset}_{task}_{kg}{th}.pkl"
@@ -152,19 +153,33 @@ def get_rel_emb(map_cluster_rel):
     return torch.tensor(rel_emb)
 
 
-def get_subgraph(G, dataset, task, idx):
+def label_k_hop_nodes(G, dataset, k=1):
+    for patient in tqdm(dataset):
+        nodes, _, _, _ = k_hop_subgraph(torch.tensor(patient['node_set']), k, G.edge_index)
+        patient['node_set'] = nodes.tolist()
+    
+    return dataset
+
+
+def get_subgraph(G, dataset, task, idx, strategy="1"):
     patient = dataset[idx]
     while len(patient['node_set']) == 0:
         idx -= 1
         patient = dataset[idx]
 
     # less focused 
-    # P = G.edge_subgraph(torch.tensor(patient['node_set']))
+    # L = G.subgraph(torch.tensor(patient['node_set']))
+    # P = L.edge_subgraph(torch.tensor(patient['node_set']))
 
     # more focused
     # another way to get subgraph
-    L = G.edge_subgraph(torch.tensor(patient['node_set']))
-    P = L.subgraph(torch.tensor(patient['node_set']))
+    if strategy == "1":
+        L = G.edge_subgraph(torch.tensor(patient['node_set']))
+        P = L.subgraph(torch.tensor(patient['node_set']))
+    else:
+        nodes, _, _, _ = k_hop_subgraph(torch.tensor(patient['node_set']), 2, G.edge_index)
+        L = G.edge_subgraph(nodes)
+        P = L.subgraph(torch.tensor(patient['node_set']))
 
     if task == "drugrec":
         P.label = patient['drugs_ind']
@@ -182,19 +197,20 @@ def get_subgraph(G, dataset, task, idx):
     return P
 
 class Dataset(torch.utils.data.Dataset):
-    def __init__(self, G, dataset, task):
+    def __init__(self, G, dataset, task, strategy="1"):
         self.G = G
         self.dataset=dataset
         self.task = task
+        self.strategy = strategy
     def __len__(self):
         return len(self.dataset)
     def __getitem__(self, idx):
-        return get_subgraph(G=self.G, dataset=self.dataset, task=self.task, idx=idx)
+        return get_subgraph(G=self.G, dataset=self.dataset, task=self.task, idx=idx, strategy=self.strategy)
 
-def get_dataloader(G_tg, train_dataset, val_dataset, test_dataset, task, batch_size):
-    train_set = Dataset(G=G_tg, dataset=train_dataset, task=task)
-    val_set = Dataset(G=G_tg, dataset=val_dataset, task=task)
-    test_set = Dataset(G=G_tg, dataset=test_dataset, task=task)
+def get_dataloader(G_tg, train_dataset, val_dataset, test_dataset, task, batch_size, strategy="1"):
+    train_set = Dataset(G=G_tg, dataset=train_dataset, task=task, strategy=strategy)
+    val_set = Dataset(G=G_tg, dataset=val_dataset, task=task, strategy=strategy)
+    test_set = Dataset(G=G_tg, dataset=test_dataset, task=task, strategy=strategy)
 
     train_loader = DataLoader(train_set, batch_size=batch_size, shuffle=True, drop_last=True)
     val_loader = DataLoader(val_set, batch_size=batch_size, shuffle=False, drop_last=True)
@@ -415,7 +431,12 @@ def single_run(args, params):
 
     # label direct ehr node
     print("Labeling direct ehr nodes...")
-    sample_dataset = label_ehr_nodes(task, sample_dataset, len(map_cluster), ccscm_id2clus, ccsproc_id2clus, atc3_id2clus)
+    if kg_ratio == 1.0:
+        sample_dataset = label_ehr_nodes(task, sample_dataset, len(map_cluster), ccscm_id2clus, ccsproc_id2clus, atc3_id2clus)
+    print(G)
+
+    G_tg = from_networkx(G)
+
     print("Splitting dataset...")
     train_dataset, val_dataset, test_dataset = split_by_patient(sample_dataset, [0.8, 0.1, 0.1], train_ratio=train_ratio, seed=528)
     if feat_ratio != 1.0:
@@ -437,9 +458,6 @@ def single_run(args, params):
     with open(attn_file, "rb") as f:
         attn_weights = torch.tensor(pickle.load(f))
 
-    print(G)
-
-    G_tg = from_networkx(G)
 
     # get embedding
     print("Getting embedding...")
@@ -452,7 +470,7 @@ def single_run(args, params):
 
     # get dataloader
     print("Getting dataloader...")
-    train_loader, val_loader, test_loader = get_dataloader(G_tg, train_dataset, val_dataset, test_dataset, task, batch_size)
+    train_loader, val_loader, test_loader = get_dataloader(G_tg, train_dataset, val_dataset, test_dataset, task, batch_size, strategy="1")
     
     # get model
     print("Getting model...")
@@ -510,14 +528,14 @@ def hyper_search_(args, params):
         # 'hidden_dim': [128, 256, 512],
         # 'lr': [0.001, 0.0001, 0.00001],
         # 'weight_decay': [0.001, 0.0001, 0.00001],
-        # 'dropout': [0.1, 0.2, 0.3, 0.4, 0.5],
-        # 'num_layers': [1, 2, 3, 4],
-        # 'decay_rate': [0.01, 0.02, 0.03],
-        # 'patient_mode': [
-        #     "joint", 
-        #     "graph", 
-        #     "node"
-        #     ],
+        'dropout': [0.1, 0.2, 0.3, 0.4, 0.5],
+        'num_layers': [1, 2, 3, 4],
+        'decay_rate': [0.01, 0.02, 0.03],
+        'patient_mode': [
+            "joint", 
+            "graph", 
+            "node"
+            ],
         # 'gnn' : [
         #     "GAT", 
         #     "GIN", 
@@ -532,12 +550,13 @@ def hyper_search_(args, params):
         #     0.7, 
         #     0.9
         # ]
-        # "kg_ratio":[]
-            # 0.1,
-            # 0.3,
-            # 0.5,
-            # 0.7,
-            # 0.9
+        # "kg_ratio":[
+        #     # 0.0,
+        #     # 0.1,
+        #     # 0.3,
+        #     # 0.5,
+        #     # 0.7,
+        #     # 0.9
         # ]
         # "train_ratio": [
         #     0.001,
@@ -579,15 +598,21 @@ def hyper_search_(args, params):
 
         
     }
-
-    for hp_name, hp_options in hyperparameter_options.items():
-        print(f"now searching for {hp_name}...")
-        for hp_value in hp_options:
-            print(f"now searching for {hp_name}={hp_value}...")
-            params_copy = params.copy()
-            params_copy[hp_name] = hp_value
-            for i in range(3):
-                single_run(args, params_copy)
+    for task in [
+        # "mortality", 
+        # "readmission", 
+        # "lenofstay", 
+        "drugrec"
+        ]:
+        hyperparameter_options["task"] = [task]
+        for hp_name, hp_options in hyperparameter_options.items():
+            print(f"now searching for {hp_name}...")
+            for hp_value in hp_options:
+                print(f"now searching for {hp_name}={hp_value}...")
+                params_copy = params.copy()
+                params_copy[hp_name] = hp_value
+                for i in range(2):
+                    single_run(args, params_copy)
 
 
 def main():

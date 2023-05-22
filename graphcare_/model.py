@@ -21,7 +21,7 @@ from torch_geometric.typing import (
     SparseTensor,
 )
 from torch_geometric.utils import spmm
-from torch_geometric.nn import global_mean_pool
+from torch_geometric.nn import global_mean_pool, global_max_pool, global_add_pool
 from torch_geometric.utils import softmax
 from torch.nn import LeakyReLU
 
@@ -207,7 +207,7 @@ class GraphCare(nn.Module):
         for layer in range(1, self.layers+1):
             if self.use_alpha:
                 # alpha = masked_softmax((self.leakyrelu(self.alpha_attn[str(layer)](visit_node.float()))), mask=visit_node>1, dim=1)
-                alpha = torch.softmax((self.alpha_attn[str(layer)](visit_node.float())), dim=1)
+                alpha = torch.softmax((self.alpha_attn[str(layer)](visit_node.float())), dim=1)  # (batch, max_visit, num_nodes)
 
             if self.use_beta:
                 # beta = masked_softmax((self.leakyrelu(self.beta_attn[str(layer)](visit_node.float()))), mask=visit_node>1, dim=0) * self.lambda_j

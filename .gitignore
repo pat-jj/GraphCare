@@ -3,6 +3,7 @@
 /ehr_training_result
 .exp_data
 /output
+/clinical_notes
 .ipynb_checkpoints
 /resources
 .__pycache__
