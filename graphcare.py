@@ -611,7 +611,7 @@ def hyper_search_(args, params):
                 print(f"now searching for {hp_name}={hp_value}...")
                 params_copy = params.copy()
                 params_copy[hp_name] = hp_value
-                for i in range(2):
+                for i in range(10):
                     single_run(args, params_copy)
 
 

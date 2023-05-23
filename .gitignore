@@ -1,11 +1,10 @@
 /graphs
-/graphs-gpt4
 /ehr_training_result
 .exp_data
 /output
 /clinical_notes
 .ipynb_checkpoints
-/resources
+/resources/openai.key
 .__pycache__
 .output
 .neptune

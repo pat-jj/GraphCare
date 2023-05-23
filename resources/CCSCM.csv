@@ -1,0 +1,286 @@
+code,name
+1,Tuberculosis
+10,Immunizations and screening for infectious disease
+100,Acute myocardial infarction
+101,Coronary atherosclerosis and other heart disease
+102,Nonspecific chest pain
+103,Pulmonary heart disease
+104,Other and ill-defined heart disease
+105,Conduction disorders
+106,Cardiac dysrhythmias
+107,Cardiac arrest and ventricular fibrillation
+108,Congestive heart failure; nonhypertensive
+109,Acute cerebrovascular disease
+11,Cancer of head and neck
+110,Occlusion or stenosis of precerebral arteries
+111,Other and ill-defined cerebrovascular disease
+112,Transient cerebral ischemia
+113,Late effects of cerebrovascular disease
+114,Peripheral and visceral atherosclerosis
+115,Aortic; peripheral; and visceral artery aneurysms
+116,Aortic and peripheral arterial embolism or thrombosis
+117,Other circulatory disease
+118,Phlebitis; thrombophlebitis and thromboembolism
+119,Varicose veins of lower extremity
+12,Cancer of esophagus
+120,Hemorrhoids
+121,Other diseases of veins and lymphatics
+122,Pneumonia
+123,Influenza
+124,Acute and chronic tonsillitis
+125,Acute bronchitis
+126,Other upper respiratory infections
+127,Chronic obstructive pulmonary disease and bronchiectasis
+128,Asthma
+129,Aspiration pneumonitis; food/vomitus
+13,Cancer of stomach
+130,Pleurisy; pneumothorax; pulmonary collapse
+131,Respiratory failure; insufficiency; arrest (adult)
+132,Lung disease due to external agents
+133,Other lower respiratory disease
+134,Other upper respiratory disease
+135,Intestinal infection
+136,Disorders of teeth and jaw
+137,Diseases of mouth; excluding dental
+138,Esophageal disorders
+139,Gastroduodenal ulcer (except hemorrhage)
+14,Cancer of colon
+140,Gastritis and duodenitis
+141,Other disorders of stomach and duodenum
+142,Appendicitis and other appendiceal conditions
+143,Abdominal hernia
+144,Regional enteritis and ulcerative colitis
+145,Intestinal obstruction without hernia
+146,Diverticulosis and diverticulitis
+147,Anal and rectal conditions
+148,Peritonitis and intestinal abscess
+149,Biliary tract disease
+15,Cancer of rectum and anus
+150,Liver disease; alcohol-related
+151,Other liver diseases
+152,Pancreatic disorders (not diabetes)
+153,Gastrointestinal hemorrhage
+154,Noninfectious gastroenteritis
+155,Other gastrointestinal disorders
+156,Nephritis; nephrosis; renal sclerosis
+157,Acute and unspecified renal failure
+158,Chronic kidney disease
+159,Urinary tract infections
+16,Cancer of liver and intrahepatic bile duct
+160,Calculus of urinary tract
+161,Other diseases of kidney and ureters
+162,Other diseases of bladder and urethra
+163,Genitourinary symptoms and ill-defined conditions
+164,Hyperplasia of prostate
+165,Inflammatory conditions of male genital organs
+166,Other male genital disorders
+167,Nonmalignant breast conditions
+168,Inflammatory diseases of female pelvic organs
+169,Endometriosis
+17,Cancer of pancreas
+170,Prolapse of female genital organs
+171,Menstrual disorders
+172,Ovarian cyst
+173,Menopausal disorders
+174,Female infertility
+175,Other female genital disorders
+176,Contraceptive and procreative management
+177,Spontaneous abortion
+178,Induced abortion
+179,Postabortion complications
+18,Cancer of other GI organs; peritoneum
+180,Ectopic pregnancy
+181,Other complications of pregnancy
+182,Hemorrhage during pregnancy; abruptio placenta; placenta previa
+183,Hypertension complicating pregnancy; childbirth and the puerperium
+184,Early or threatened labor
+185,Prolonged pregnancy
+186,Diabetes or abnormal glucose tolerance complicating pregnancy; childbirth; or the puerperium
+187,Malposition; malpresentation
+188,Fetopelvic disproportion; obstruction
+189,Previous C-section
+19,Cancer of bronchus; lung
+190,Fetal distress and abnormal forces of labor
+191,Polyhydramnios and other problems of amniotic cavity
+192,Umbilical cord complication
+193,OB-related trauma to perineum and vulva
+194,Forceps delivery
+195,Other complications of birth; puerperium affecting management of mother
+196,Other pregnancy and delivery including normal
+197,Skin and subcutaneous tissue infections
+198,Other inflammatory condition of skin
+199,Chronic ulcer of skin
+2,Septicemia (except in labor)
+20,Cancer; other respiratory and intrathoracic
+200,Other skin disorders
+201,Infective arthritis and osteomyelitis
+202,Rheumatoid arthritis and related disease
+203,Osteoarthritis
+204,Other non-traumatic joint disorders
+205,Spondylosis; intervertebral disc disorders; other back problems
+206,Osteoporosis
+207,Pathological fracture
+208,Acquired foot deformities
+209,Other acquired deformities
+21,Cancer of bone and connective tissue
+210,Systemic lupus erythematosus and connective tissue disorders
+211,Other connective tissue disease
+212,Other bone disease and musculoskeletal deformities
+213,Cardiac and circulatory congenital anomalies
+214,Digestive congenital anomalies
+215,Genitourinary congenital anomalies
+216,Nervous system congenital anomalies
+217,Other congenital anomalies
+218,Liveborn
+219,Short gestation; low birth weight; and fetal growth retardation
+22,Melanomas of skin
+220,Intrauterine hypoxia and birth asphyxia
+221,Respiratory distress syndrome
+222,Hemolytic jaundice and perinatal jaundice
+223,Birth trauma
+224,Other perinatal conditions
+225,Joint disorders and dislocations; trauma-related
+226,Fracture of neck of femur (hip)
+227,Spinal cord injury
+228,Skull and face fractures
+229,Fracture of upper limb
+23,Other non-epithelial cancer of skin
+230,Fracture of lower limb
+231,Other fractures
+232,Sprains and strains
+233,Intracranial injury
+234,Crushing injury or internal injury
+235,Open wounds of head; neck; and trunk
+236,Open wounds of extremities
+237,Complication of device; implant or graft
+238,Complications of surgical procedures or medical care
+239,Superficial injury; contusion
+24,Cancer of breast
+240,Burns
+241,Poisoning by psychotropic agents
+242,Poisoning by other medications and drugs
+243,Poisoning by nonmedicinal substances
+244,Other injuries and conditions due to external causes
+245,Syncope
+246,Fever of unknown origin
+247,Lymphadenitis
+248,Gangrene
+249,Shock
+25,Cancer of uterus
+250,Nausea and vomiting
+251,Abdominal pain
+252,Malaise and fatigue
+253,Allergic reactions
+254,Rehabilitation care; fitting of prostheses; and adjustment of devices
+255,Administrative/social admission
+256,Medical examination/evaluation
+257,Other aftercare
+258,Other screening for suspected conditions
+259,Residual codes; unclassified
+26,Cancer of cervix
+260,E Codes: All (external causes of injury and poisoning)
+2601,E Codes: Cut/pierceb
+2602,E Codes: Drowning/submersion
+2603,E Codes: Fall
+2604,E Codes: Fire/burn
+2605,E Codes: Firearm
+2606,E Codes: Machinery
+2607,E Codes: Motor vehicle traffic (MVT)
+2608,E Codes: Pedal cyclist; not MVT
+2609,E Codes: Pedestrian; not MVT
+2610,E Codes: Transport; not MVT
+2611,E Codes: Natural/environment
+2612,E Codes: Overexertion
+2613,E Codes: Poisoning
+2614,E Codes: Struck by; against
+2615,E Codes: Suffocation
+2616,E Codes: Adverse effects of medical care
+2617,E Codes: Adverse effects of medical drugs
+2618,E Codes: Other specified and classifiable
+2619,E Codes: Other specified; NEC
+2620,E Codes: Unspecified
+2621,E Codes: Place of occurrence
+27,Cancer of ovary
+28,Cancer of other female genital organs
+29,Cancer of prostate
+3,Bacterial infection; unspecified site
+30,Cancer of testis
+31,Cancer of other male genital organs
+32,Cancer of bladder
+33,Cancer of kidney and renal pelvis
+34,Cancer of other urinary organs
+35,Cancer of brain and nervous system
+36,Cancer of thyroid
+37,Hodgkin`s disease
+38,Non-Hodgkin`s lymphoma
+39,Leukemias
+4,Mycoses
+40,Multiple myeloma
+41,Cancer; other and unspecified primary
+42,Secondary malignancies
+43,Malignant neoplasm without specification of site
+44,Neoplasms of unspecified nature or uncertain behavior
+45,Maintenance chemotherapy; radiotherapy
+46,Benign neoplasm of uterus
+47,Other and unspecified benign neoplasm
+48,Thyroid disorders
+49,Diabetes mellitus without complication
+5,HIV infection
+50,Diabetes mellitus with complications
+51,Other endocrine disorders
+52,Nutritional deficiencies
+53,Disorders of lipid metabolism
+54,Gout and other crystal arthropathies
+55,Fluid and electrolyte disorders
+56,Cystic fibrosis
+57,Immunity disorders
+58,Other nutritional; endocrine; and metabolic disorders
+59,Deficiency and other anemia
+6,Hepatitis
+60,Acute posthemorrhagic anemia
+61,Sickle cell anemia
+62,Coagulation and hemorrhagic disorders
+63,Diseases of white blood cells
+64,Other hematologic conditions
+650,Adjustment disorders
+651,Anxiety disorders
+652,Attention-deficit
+653,Delirium
+654,Developmental disorders
+655,Disorders usually diagnosed in infancy
+656,Impulse control disorders
+657,Mood disorders
+658,Personality disorders
+659,Schizophrenia and other psychotic disorders
+660,Alcohol-related disorders
+661,Substance-related disorders
+662,Suicide and intentional self-inflicted injury
+663,Screening and history of mental health and substance abuse codes
+670,Miscellaneous mental health disorders
+7,Viral infection
+76,Meningitis
+77,Encephalitis
+78,Other CNS infection and poliomyelitis
+79,Parkinson`s disease
+8,Other infections; including parasitic
+80,Multiple sclerosis
+81,Other hereditary and degenerative nervous system conditions
+82,Paralysis
+83,Epilepsy; convulsions
+84,Headache; including migraine
+85,Coma; stupor; and brain damage
+86,Cataract
+87,Retinal detachments; defects; vascular occlusion; and retinopathy
+88,Glaucoma
+89,Blindness and vision defects
+9,Sexually transmitted infections
+90,Inflammation; infection of eye
+91,Other eye disorders
+92,Otitis media and related conditions
+93,Conditions associated with dizziness or vertigo
+94,Other ear and sense organ disorders
+95,Other nervous system disorders
+96,Heart valve disorders
+97,Peri-; endo-; and myocarditis; cardiomyopathy
+98,Essential hypertension
+99,Hypertension with complications and secondary hypertension

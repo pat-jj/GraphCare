@@ -1,0 +1,232 @@
+code,name
+1,Incision and excision of CNS
+10,Thyroidectomy; partial or complete
+100,Endoscopy and endoscopic biopsy of the urinary tract
+101,Transurethral excision; drainage; or removal urinary obstruction
+102,Ureteral catheterization
+103,Nephrotomy and nephrostomy
+104,Nephrectomy; partial or complete
+105,Kidney transplant
+106,Genitourinary incontinence procedures
+107,Extracorporeal lithotripsy; urinary
+108,Indwelling catheter
+109,Procedures on the urethra
+11,Diagnostic endocrine procedures
+110,Other diagnostic procedures of urinary tract
+111,Other non-OR therapeutic procedures of urinary tract
+112,Other OR therapeutic procedures of urinary tract
+113,Transurethral resection of prostate (TURP)
+114,Open prostatectomy
+115,Circumcision
+116,Diagnostic procedures; male genital
+117,Other non-OR therapeutic procedures; male genital
+118,Other OR therapeutic procedures; male genital
+119,Oophorectomy; unilateral and bilateral
+12,Other therapeutic endocrine procedures
+120,Other operations on ovary
+121,Ligation or occlusion of fallopian tubes
+122,Removal of ectopic pregnancy
+123,Other operations on fallopian tubes
+124,Hysterectomy; abdominal and vaginal
+125,Other excision of cervix and uterus
+126,Abortion (termination of pregnancy)
+127,Dilatation and curettage (D&C); aspiration after delivery or abortion
+128,Diagnostic dilatation and curettage (D&C)
+129,Repair of cystocele and rectocele; obliteration of vaginal vault
+13,Corneal transplant
+130,Other diagnostic procedures; female organs
+131,Other non-OR therapeutic procedures; female organs
+132,Other OR therapeutic procedures; female organs
+133,Episiotomy
+134,Cesarean section
+135,Forceps; vacuum; and breech delivery
+136,Artificial rupture of membranes to assist delivery
+137,Other procedures to assist delivery
+138,Diagnostic amniocentesis
+139,Fetal monitoring
+14,Glaucoma procedures
+140,Repair of current obstetric laceration
+141,Other therapeutic obstetrical procedures
+142,Partial excision bone
+143,Bunionectomy or repair of toe deformities
+144,Treatment; facial fracture or dislocation
+145,Treatment; fracture or dislocation of radius and ulna
+146,Treatment; fracture or dislocation of hip and femur
+147,Treatment; fracture or dislocation of lower extremity (other than hip or femur)
+148,Other fracture and dislocation procedure
+149,Arthroscopy
+15,Lens and cataract procedures
+150,Division of joint capsule; ligament or cartilage
+151,Excision of semilunar cartilage of knee
+152,Arthroplasty knee
+153,Hip replacement; total and partial
+154,Arthroplasty other than hip or knee
+155,Arthrocentesis
+156,Injections and aspirations of muscles; tendons; bursa; joints and soft tissue
+157,Amputation of lower extremity
+158,Spinal fusion
+159,Other diagnostic procedures on musculoskeletal system
+16,Repair of retinal tear; detachment
+160,Other therapeutic procedures on muscles and tendons
+161,Other OR therapeutic procedures on bone
+162,Other OR therapeutic procedures on joints
+163,Other non-OR therapeutic procedures on musculoskeletal system
+164,Other OR therapeutic procedures on musculoskeletal system
+165,Breast biopsy and other diagnostic procedures on breast
+166,Lumpectomy; quadrantectomy of breast
+167,Mastectomy
+168,Incision and drainage; skin and subcutaneous tissue
+169,Debridement of wound; infection or burn
+17,Destruction of lesion of retina and choroid
+170,Excision of skin lesion
+171,Suture of skin and subcutaneous tissue
+172,Skin graft
+173,Other diagnostic procedures on skin and subcutaneous tissue
+174,Other non-OR therapeutic procedures on skin and breast
+175,Other OR therapeutic procedures on skin and breast
+176,Organ transplantation (other than bone marrow
+177,Computerized axial tomography (CT) scan head
+178,CT scan chest
+179,CT scan abdomen
+18,Diagnostic procedures on eye
+180,Other CT scan
+181,Myelogram
+182,Mammography
+183,Routine chest X-ray
+184,Intraoperative cholangiogram
+185,Upper gastrointestinal X-ray
+186,Lower gastrointestinal X-ray
+187,Intravenous pyelogram
+188,Cerebral arteriogram
+189,Contrast aortogram
+19,Other therapeutic procedures on eyelids; conjunctiva; cornea
+190,Contrast arteriogram of femoral and lower extremity arteries
+191,Arterio- or venogram (not heart and head)
+192,Diagnostic ultrasound of head and neck
+193,Diagnostic ultrasound of heart (echocardiogram)
+194,Diagnostic ultrasound of gastrointestinal tract
+195,Diagnostic ultrasound of urinary tract
+196,Diagnostic ultrasound of abdomen or retroperitoneum
+197,Other diagnostic ultrasound
+198,Magnetic resonance imaging
+199,Electroencephalogram (EEG)
+2,Insertion; replacement; or removal of extracranial ventricular shunt
+20,Other intraocular therapeutic procedures
+200,Nonoperative urinary system measurements
+201,Cardiac stress tests
+202,Electrocardiogram
+203,Electrographic cardiac monitoring
+204,Swan-Ganz catheterization for monitoring
+205,Arterial blood gases
+206,Microscopic examination (bacterial smear; culture; toxicology)
+207,Nuclear medicine imaging of bone
+208,Nuclear medicine imaging of pulmonary
+209,Non-imaging nuclear medicine probe or assay
+21,Other extraocular muscle and orbit therapeutic procedures
+210,Other nuclear medicine imaging
+211,Radiation therapy
+212,Diagnostic physical therapy
+213,Physical therapy exercises; manipulation; and other procedures
+214,Traction; splints; and other wound care
+215,Other physical therapy and rehabilitation
+216,Respiratory intubation and mechanical ventilation
+217,Other respiratory therapy
+218,Psychological and psychiatric evaluation and therapy
+219,Alcohol and drug rehabilitation/detoxification
+22,Tympanoplasty
+220,Ophthalmologic and otologic diagnosis and treatment
+221,Nasogastric tube
+222,Blood transfusion
+223,Enteral and parenteral nutrition
+224,Cancer chemotherapy
+225,Conversion of cardiac rhythm
+226,Other diagnostic radiology and related techniques
+227,Other diagnostic procedures
+228,Prophylactic vaccinations and inoculations
+229,Nonoperative removal of foreign body
+23,Myringotomy
+230,Extracorporeal shock wave other than urinary
+231,Other therapeutic procedures
+24,Mastoidectomy
+25,Diagnostic procedures on ear
+26,Other therapeutic ear procedures
+27,Control of epistaxis
+28,Plastic procedures on nose
+29,Dental procedures
+3,Laminectomy; excision intervertebral disc
+30,Tonsillectomy and/or adenoidectomy
+31,Diagnostic procedures on nose; mouth and pharynx
+32,Other non-OR therapeutic procedures on nose; mouth and pharynx
+33,Other OR therapeutic procedures on nose; mouth and pharynx
+34,Tracheostomy; temporary and permanent
+35,Tracheoscopy and laryngoscopy with biopsy
+36,Lobectomy or pneumonectomy
+37,Diagnostic bronchoscopy and biopsy of bronchus
+38,Other diagnostic procedures on lung and bronchus
+39,Incision of pleura; thoracentesis; chest drainage
+4,Diagnostic spinal tap
+40,Other diagnostic procedures of respiratory tract and mediastinum
+41,Other non-OR therapeutic procedures on respiratory system
+42,Other OR Rx procedures on respiratory system and mediastinum
+43,Heart valve procedures
+44,Coronary artery bypass graft (CABG)
+45,Percutaneous transluminal coronary angioplasty (PTCA)
+46,Coronary thrombolysis
+47,Diagnostic cardiac catheterization; coronary arteriography
+48,Insertion; revision; replacement; removal of cardiac pacemaker or cardioverter/defibrillator
+49,Other OR heart procedures
+5,Insertion of catheter or spinal stimulator and injection into spinal canal
+50,Extracorporeal circulation auxiliary to open heart procedures
+51,Endarterectomy; vessel of head and neck
+52,Aortic resection; replacement or anastomosis
+53,Varicose vein stripping; lower limb
+54,Other vascular catheterization; not heart
+55,Peripheral vascular bypass
+56,Other vascular bypass and shunt; not heart
+57,Creation; revision and removal of arteriovenous fistula or vessel-to-vessel cannula for dialysis
+58,Hemodialysis
+59,Other OR procedures on vessels of head and neck
+6,Decompression peripheral nerve
+60,Embolectomy and endarterectomy of lower limbs
+61,Other OR procedures on vessels other than head and neck
+62,Other diagnostic cardiovascular procedures
+63,Other non-OR therapeutic cardiovascular procedures
+64,Bone marrow transplant
+65,Bone marrow biopsy
+66,Procedures on spleen
+67,Other therapeutic procedures; hemic and lymphatic system
+68,Injection or ligation of esophageal varices
+69,Esophageal dilatation
+7,Other diagnostic nervous system procedures
+70,Upper gastrointestinal endoscopy; biopsy
+71,Gastrostomy; temporary and permanent
+72,Colostomy; temporary and permanent
+73,Ileostomy and other enterostomy
+74,Gastrectomy; partial and total
+75,Small bowel resection
+76,Colonoscopy and biopsy
+77,Proctoscopy and anorectal biopsy
+78,Colorectal resection
+79,Local excision of large intestine lesion (not endoscopic)
+8,Other non-OR or closed therapeutic nervous system procedures
+80,Appendectomy
+81,Hemorrhoid procedures
+82,Fluoroscopy of the biliary and pancreatic ducts (ERCP
+83,Biopsy of liver
+84,Cholecystectomy and common duct exploration
+85,Inguinal and femoral hernia repair
+86,Other hernia repair
+87,Laparoscopy (GI only)
+88,Abdominal paracentesis
+89,Exploratory laparotomy
+9,Other OR therapeutic nervous system procedures
+90,Excision; lysis peritoneal adhesions
+91,Peritoneal dialysis
+92,Other bowel diagnostic procedures
+93,Other non-OR upper GI therapeutic procedures
+94,Other OR upper GI therapeutic procedures
+95,Other non-OR lower GI therapeutic procedures
+96,Other OR lower GI therapeutic procedures
+97,Other gastrointestinal diagnostic procedures
+98,Other non-OR gastrointestinal therapeutic procedures
+99,Other OR gastrointestinal therapeutic procedures
