@@ -173,13 +173,14 @@ def get_subgraph(G, dataset, task, idx, strategy="1"):
 
     # more focused
     # another way to get subgraph
-    if strategy == "1":
-        L = G.edge_subgraph(torch.tensor(patient['node_set']))
-        P = L.subgraph(torch.tensor(patient['node_set']))
-    else:
-        nodes, _, _, _ = k_hop_subgraph(torch.tensor(patient['node_set']), 2, G.edge_index)
-        L = G.edge_subgraph(nodes)
-        P = L.subgraph(torch.tensor(patient['node_set']))
+    # if strategy == "1":
+    #     L = G.edge_subgraph(torch.tensor(patient['node_set']))
+    #     P = L.subgraph(torch.tensor(patient['node_set']))
+    # else:
+    nodes, _, _, edge_mask = k_hop_subgraph(torch.tensor(patient['node_set']), 2, G.edge_index)
+    mask_idx = torch.where(edge_mask)[0]
+    L = G.edge_subgraph(mask_idx)
+    P = L.subgraph(torch.tensor(patient['node_set']))
 
     if task == "drugrec":
         P.label = patient['drugs_ind']
