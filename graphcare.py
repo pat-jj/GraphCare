@@ -364,7 +364,7 @@ def construct_args():
     parser.add_argument('--task', type=str, default='mortality')
     parser.add_argument('--kg', type=str, default='GPT-KG')
     parser.add_argument('--batch_size', type=int, default=64)
-    parser.add_argument('--hidden_dim', type=int, default=512)
+    parser.add_argument('--hidden_dim', type=int, default=128)
     parser.add_argument('--epochs', type=int, default=100)
     parser.add_argument('--lr', type=float, default=1e-3)
     parser.add_argument('--weight_decay', type=float, default=1e-5)
@@ -488,17 +488,25 @@ def single_run(args, params):
         node_emb=node_emb,
         rel_emb=rel_emb,
         patient_mode=patient_mode,
-        use_alpha=True if alpha == "True" else False,
-        use_beta=True if beta == "True" else False,
+        use_alpha=False if alpha == "True" else False,
+        use_beta=False if beta == "True" else False,
         use_edge_attn=True if edge_attn == "True" else False,
         gnn=gnn,
+        # gnn="GIN",
         freeze=True if freeze == "True" else False,
         attn_init=attn_weights if attn_init == "True" else None,
         drop_rate=in_drop_rate,
     )
     model.to(device)
 
-    print(model)
+    total_params = sum(
+	param.numel() for param in model.parameters()
+    )
+
+    print("total params:", total_params)
+
+
+    # print(model)
 
     # train
     logger.info("Start training...")

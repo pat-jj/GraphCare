@@ -11,12 +11,13 @@ from torch_geometric.loader import DataListLoader
 
 
 class GAT(torch.nn.Module):
-    def __init__(self, in_channels, hidden_channels, out_channels, heads=2):
+    def __init__(self, in_channels, hidden_channels, out_channels, heads=4):
         super(GAT, self).__init__()
         
         self.conv1 = GATConv(in_channels, hidden_channels, heads=heads)
         self.conv2 = GATConv(hidden_channels*heads, hidden_channels, heads=heads)
-        self.conv3 = GATConv(hidden_channels*heads, hidden_channels, heads=1)
+        self.conv3 = GATConv(hidden_channels*heads, hidden_channels, heads=heads)
+        self.conv4 = GATConv(hidden_channels*heads, hidden_channels, heads=heads)
 
         self.fc = Linear(hidden_channels, out_channels)
         

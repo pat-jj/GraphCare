@@ -86,7 +86,3 @@ The scripts running baseline models are placed in
 ``` bash
 /baselines
 ```
-
-We show precise (three decimal digits) results (equivalent to Table 2 in the paper) as follows:
-
-![image](./baseline_compare.png)
