@@ -1,6 +1,6 @@
 # GraphCare
 Source code for our paper: "GraphCare: Enhancing Healthcare Predictions with
-Open-World Personalized Knowledge Graphs".
+Open-World Personalized Knowledge Graphs" accepted by ICLR'24.
 
 Requirements:
 ``` bash
