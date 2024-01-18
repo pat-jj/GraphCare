@@ -1,12 +1,13 @@
 /graphs
 /play
 /ehr_training_result
+baselines.py
 .exp_data
 /output
 /clinical_notes
 .ipynb_checkpoints
 /resources/openai.key
-.__pycache__
+__pycache__
 .output
 .neptune
 .ipynb_checkpoints

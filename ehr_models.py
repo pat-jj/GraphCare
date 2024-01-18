@@ -11,36 +11,37 @@ import json
 
 tasks = \
 [
-    "mortality", 
-    "readmission", 
-    "lenofstay", 
+    # "mortality", 
+    # "readmission", 
+    # "lenofstay", 
     "drugrec"
     ]
 train_ratios = \
 [
-    0.001,
-    0.002,
-    0.003,
-    0.004,
-    0.005,
-    0.006,
-    0.007,
-    0.008,
-    0.009,
-    0.01,
-    0.02,
-    0.03,
-    0.04,
-    0.05,
-    0.06,
-    0.07,
-    0.08,
-    0.09,
-    0.1,
-    0.3,
-    0.50,
-    0.7,
-    0.9,
+    # 0.001,
+    # 0.002,
+    # 0.003,
+    # 0.004,
+    # 0.005,
+    # 0.006,
+    # 0.007,
+    # 0.008,
+    # 0.009,
+    # 0.01,
+    # 0.02,
+    # 0.03,
+    # 0.04,
+    # 0.05,
+    # 0.06,
+    # 0.07,
+    # 0.08,
+    # 0.09,
+    # 0.1,
+    # 0.3,
+    # 0.50,
+    # 0.7,
+    # 0.9,
+    1.0
 ]
 
 device = torch.device('cuda:4' if torch.cuda.is_available() else 'cpu')
@@ -59,11 +60,11 @@ for task in tasks:
             models = [RNN, Transformer, RETAIN]
         else:
             models = [
-                Transformer, 
-                RETAIN, 
+                # Transformer, 
+                # RETAIN, 
                 # SafeDrug, 
-                MICRON, 
-                # GAMENet
+                # MICRON, 
+                GAMENet
                 ]
 
 

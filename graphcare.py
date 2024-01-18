@@ -26,10 +26,10 @@ def load_everything(dataset, task, kg="", kg_ratio=1.0, th="th015"):
         kg = ""
     if task == "drugrec" or task == "lenofstay":
         path_1 = "/data/pj20/exp_data/ccscm_ccsproc"
-        path_2 = "./graphs/cond_proc/CCSCM_CCSPROC"
+        path_2 = "/data/pj20/g/graphs/cond_proc/CCSCM_CCSPROC"
     elif task == "mortality" or task == "readmission":
         path_1 = "/data/pj20/exp_data/ccscm_ccsproc_atc3"
-        path_2 = "./graphs/cond_proc_drug/CCSCM_CCSPROC_ATC3"
+        path_2 = "/data/pj20/g/graphs/cond_proc_drug/CCSCM_CCSPROC_ATC3"
 
     if kg_ratio != 1.0:
         sample_dataset_file = f"{path_1}/sample_dataset_{dataset}_{task}_{kg}{th}_kg{kg_ratio}.pkl"
