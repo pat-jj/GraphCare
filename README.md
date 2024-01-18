@@ -84,5 +84,5 @@ graphcare.py
 ## Run Baseline Models
 The scripts running baseline models are placed in 
 ``` bash
-/baselines
+ehr_models.py
 ```
