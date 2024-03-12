@@ -1,8 +1,8 @@
 # GraphCare
-Source code for our paper: "GraphCare: Enhancing Healthcare Predictions with
-Open-World Personalized Knowledge Graphs" accepted by ICLR'24.
+Code for the paper: [GraphCare: Enhancing Healthcare Predictions with Personalized Knowledge Graphs](https://openreview.net/pdf?id=tVTN7Zs0ml) in ICLR'24.
 
-Requirements:
+
+## Requirements:
 ``` bash
 pip install torch==1.12.0
 pip install torch-geometric==2.3.0
@@ -11,7 +11,9 @@ pip install scikit-learn==1.2.1
 pip install openai==0.27.4
 ```
 
-We follow the flow of methodology section (Section 3) to explain our implementation.
+---
+
+**We follow the flow of methodology section (Section 3) to explain our implementation.**
 
 ## 1. Concept-specific Knowledge Graph (KG) Generation
 ### 1.1 LLM-based KG extraction via prompting
@@ -86,3 +88,17 @@ The scripts running baseline models are placed in
 ``` bash
 ehr_models.py
 ```
+
+## Cite **GraphCare**
+``` bash
+@inproceedings{jiang2023graphcare,
+  title={GraphCare: Enhancing Healthcare Predictions with Personalized Knowledge Graphs},
+  author={Jiang, Pengcheng and Xiao, Cao and Cross, Adam Richard and Sun, Jimeng},
+  booktitle={The Twelfth International Conference on Learning Representations},
+  year={2023}
+}
+```
+
+Thanks for your interest in our work! 😊
+
+---
