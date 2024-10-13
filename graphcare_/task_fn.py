@@ -163,12 +163,29 @@ def readmission_prediction_mimic3_fn(patient: Patient, time_window=15):
             {
                 "visit_id": visit.visit_id,
                 "patient_id": patient.patient_id,
-                "conditions": [conditions],
-                "procedures": [procedures],
-                "drugs": [drugs],
+                "conditions": conditions,
+                "procedures": procedures,
+                "drugs": drugs,
                 "label": readmission_label,
             }
         )
+    if len(samples) < 1:
+        return []
+    # add history
+    samples[0]["conditions"] = [samples[0]["conditions"]]
+    samples[0]["procedures"] = [samples[0]["procedures"]]
+    samples[0]["drugs"] = [samples[0]["drugs"]]
+
+    for i in range(1, len(samples)):
+        samples[i]["conditions"] = samples[i - 1]["conditions"] + [
+            samples[i]["conditions"]
+        ]
+        samples[i]["procedures"] = samples[i - 1]["procedures"] + [
+            samples[i]["procedures"]
+        ]
+        samples[i]["drugs"] = samples[i - 1]["drugs"] + [
+            samples[i]["drugs"]
+        ]
     # no cohort selection
     return samples
 
@@ -192,12 +209,29 @@ def length_of_stay_prediction_mimic3_fn(patient: Patient):
             {
                 "visit_id": visit.visit_id,
                 "patient_id": patient.patient_id,
-                "conditions": [conditions],
-                "procedures": [procedures],
-                "drugs": [drugs],
+                "conditions": conditions,
+                "procedures": procedures,
+                "drugs": drugs,
                 "label": los_category,
             }
         )
+    if len(samples) < 1:
+        return []
+    # add history
+    samples[0]["conditions"] = [samples[0]["conditions"]]
+    samples[0]["procedures"] = [samples[0]["procedures"]]
+    samples[0]["drugs"] = [samples[0]["drugs"]]
+
+    for i in range(1, len(samples)):
+        samples[i]["conditions"] = samples[i - 1]["conditions"] + [
+            samples[i]["conditions"]
+        ]
+        samples[i]["procedures"] = samples[i - 1]["procedures"] + [
+            samples[i]["procedures"]
+        ]
+        samples[i]["drugs"] = samples[i - 1]["drugs"] + [
+            samples[i]["drugs"]
+        ]
     # no cohort selection
     return samples
 
@@ -222,12 +256,29 @@ def length_of_stay_prediction_mimic4_fn(patient: Patient):
             {
                 "visit_id": visit.visit_id,
                 "patient_id": patient.patient_id,
-                "conditions": [conditions],
-                "procedures": [procedures],
-                "drugs": [drugs],
+                "conditions": conditions,
+                "procedures": procedures,
+                "drugs": drugs,
                 "label": los_category,
             }
         )
+    if len(samples) < 1:
+        return []
+    # add history
+    samples[0]["conditions"] = [samples[0]["conditions"]]
+    samples[0]["procedures"] = [samples[0]["procedures"]]
+    samples[0]["drugs"] = [samples[0]["drugs"]]
+
+    for i in range(1, len(samples)):
+        samples[i]["conditions"] = samples[i - 1]["conditions"] + [
+            samples[i]["conditions"]
+        ]
+        samples[i]["procedures"] = samples[i - 1]["procedures"] + [
+            samples[i]["procedures"]
+        ]
+        samples[i]["drugs"] = samples[i - 1]["drugs"] + [
+            samples[i]["drugs"]
+        ]
     # no cohort selection
     return samples
 
@@ -252,12 +303,29 @@ def length_of_stay_prediction_eicu_fn(patient: Patient):
             {
                 "visit_id": visit.visit_id,
                 "patient_id": patient.patient_id,
-                "conditions": [conditions],
-                "procedures": [procedures],
-                "drugs": [drugs],
+                "conditions": conditions,
+                "procedures": procedures,
+                "drugs": drugs,
                 "label": los_category,
             }
         )
+    if len(samples) < 1:
+        return []
+    # add history
+    samples[0]["conditions"] = [samples[0]["conditions"]]
+    samples[0]["procedures"] = [samples[0]["procedures"]]
+    samples[0]["drugs"] = [samples[0]["drugs"]]
+
+    for i in range(1, len(samples)):
+        samples[i]["conditions"] = samples[i - 1]["conditions"] + [
+            samples[i]["conditions"]
+        ]
+        samples[i]["procedures"] = samples[i - 1]["procedures"] + [
+            samples[i]["procedures"]
+        ]
+        samples[i]["drugs"] = samples[i - 1]["drugs"] + [
+            samples[i]["drugs"]
+        ]
     # no cohort selection
     return samples
 
@@ -285,12 +353,29 @@ def mortality_prediction_mimic4_fn(patient: Patient):
             {
                 "visit_id": visit.visit_id,
                 "patient_id": patient.patient_id,
-                "conditions": [conditions],
-                "procedures": [procedures],
-                "drugs": [drugs],
+                "conditions": conditions,
+                "procedures": procedures,
+                "drugs": drugs,
                 "label": mortality_label,
             }
         )
+    if len(samples) < 1:
+        return []
+    # add history
+    samples[0]["conditions"] = [samples[0]["conditions"]]
+    samples[0]["procedures"] = [samples[0]["procedures"]]
+    samples[0]["drugs"] = [samples[0]["drugs"]]
+
+    for i in range(1, len(samples)):
+        samples[i]["conditions"] = samples[i - 1]["conditions"] + [
+            samples[i]["conditions"]
+        ]
+        samples[i]["procedures"] = samples[i - 1]["procedures"] + [
+            samples[i]["procedures"]
+        ]
+        samples[i]["drugs"] = samples[i - 1]["drugs"] + [
+            samples[i]["drugs"]
+        ]
     # no cohort selection
     return samples
 
@@ -318,12 +403,29 @@ def readmission_prediction_mimic4_fn(patient: Patient, time_window=15):
             {
                 "visit_id": visit.visit_id,
                 "patient_id": patient.patient_id,
-                "conditions": [conditions],
-                "procedures": [procedures],
-                "drugs": [drugs],
+                "conditions": conditions,
+                "procedures": procedures,
+                "drugs": drugs,
                 "label": readmission_label,
             }
         )
+    if len(samples) < 1:
+        return []
+    # add history
+    samples[0]["conditions"] = [samples[0]["conditions"]]
+    samples[0]["procedures"] = [samples[0]["procedures"]]
+    samples[0]["drugs"] = [samples[0]["drugs"]]
+
+    for i in range(1, len(samples)):
+        samples[i]["conditions"] = samples[i - 1]["conditions"] + [
+            samples[i]["conditions"]
+        ]
+        samples[i]["procedures"] = samples[i - 1]["procedures"] + [
+            samples[i]["procedures"]
+        ]
+        samples[i]["drugs"] = samples[i - 1]["drugs"] + [
+            samples[i]["drugs"]
+        ]
     # no cohort selection
     return samples
 
