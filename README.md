@@ -91,11 +91,11 @@ ehr_models.py
 
 ## Cite **GraphCare**
 ``` bash
-@inproceedings{jiang2023graphcare,
-  title={GraphCare: Enhancing Healthcare Predictions with Personalized Knowledge Graphs},
-  author={Jiang, Pengcheng and Xiao, Cao and Cross, Adam Richard and Sun, Jimeng},
-  booktitle={The Twelfth International Conference on Learning Representations},
-  year={2023}
+@inproceedings{jiang2024graphcare,
+  title = {GraphCare: Enhancing Healthcare Predictions with Personalized Knowledge Graphs},
+  author = {Jiang, Pengcheng and Xiao, Cao and Cross, Adam and Sun, Jimeng},
+  booktitle = {The Twelfth International Conference on Learning Representations},
+  year = {2024},
 }
 ```
 
